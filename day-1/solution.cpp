@@ -29,22 +29,47 @@ Consider your entire calibration document. What is the sum of all of the calibra
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <cctype>
+
+#define toDigit(c) (c-'0')
 
 int read_calibration_value(std::string line) {
     // read calibration value given a line
+    // iterate left to right, find first digit and last digit
+    char first_digit, last_digit;
+    int first_idx = -1, last_idx = -1;
+    int idx = 0;
+    bool is_digit;
+
+    for (char c : line) {
+        // is character a digit?
+        is_digit = std::isdigit(c);
+
+        if (is_digit) {
+            if (first_idx == -1) {
+                first_digit = c;
+                first_idx = idx;
+            }
+            last_digit = c;
+            last_idx = idx;
+        }
+        idx++;
+    }
+    
+    return toDigit(first_digit) * 10 + toDigit(last_digit);
 }
 
 int get_calibration_values_sum(std::string filename) {
     // get sum of all calibration values in a file
     std::ifstream FILE(filename);
     std::string line;
+    int sum = 0;
 
     while (std::getline(FILE, line)) {
-        std::cout << line << std::endl;
+        sum += read_calibration_value(line);
     }
     FILE.close();
-
-    return 0;
+    return sum;
 }
 
 int main() {
