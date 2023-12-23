@@ -1,4 +1,6 @@
 out/
 obj/
+.vscode/
+
 *.o
 *.exe
